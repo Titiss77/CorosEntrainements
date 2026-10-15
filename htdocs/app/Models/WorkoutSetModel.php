@@ -19,9 +19,6 @@ class WorkoutSetModel extends Model
         'weight'
     ];
 
-    /**
-     * Calcule le tonnage global (Reps x Poids) pour chaque séance
-     */
     public function getTotalVolumePerWorkout(): array
     {
         $sql = "
@@ -37,9 +34,6 @@ class WorkoutSetModel extends Model
         return $this->db->query($sql)->getResultArray();
     }
 
-    /**
-     * Récupère la charge maximale soulevée sur un exercice donné pour chaque séance
-     */
     public function getExerciseEvolution(int $exerciseId): array
     {
         $sql = "
@@ -54,5 +48,20 @@ class WorkoutSetModel extends Model
         ";
         
         return $this->db->query($sql, [$exerciseId])->getResultArray();
+    }
+
+    // NOUVELLE MÉTHODE : Récupère tous les détails d'une séance
+    public function getWorkoutDetails(int $workoutId): array
+    {
+        $sql = "
+            SELECT 
+                ws.set_number, ws.reps, ws.weight,
+                e.id as exercise_id, e.name as exercise_name, e.muscle_group
+            FROM workout_sets ws
+            JOIN exercises e ON ws.exercise_id = e.id
+            WHERE ws.workout_id = ?
+            ORDER BY ws.exercise_id, ws.set_number ASC
+        ";
+        return $this->db->query($sql, [$workoutId])->getResultArray();
     }
 }

@@ -97,23 +97,36 @@
 
     <!-- Deuxième Ligne : Graphiques Musculation -->
     <div class="row g-3">
-        <div class="col-12 col-md-6">
+        <div class="col-12 col-xl-7">
             <div class="card stat-card h-100"><div class="card-body">
                 <h2 class="h5 mb-3">Tonnage Global par Séance</h2>
                 <?php if (empty($tonnageData)): ?>
                     <p class="muted">Pas de données de musculation. Ajoutez des séries pour voir le graphique.</p>
                 <?php else: ?>
-                    <canvas id="tonnageChart" height="200"></canvas>
+                    <canvas id="tonnageChart" height="150"></canvas>
                 <?php endif ?>
             </div></div>
         </div>
-        <div class="col-12 col-md-6">
+        
+        <!-- NOUVEAU BLOC : Liste des Séances de Musculation Cliquables -->
+        <div class="col-12 col-xl-5">
             <div class="card stat-card h-100"><div class="card-body">
-                <h2 class="h5 mb-3">Évolution Charge Max (Exercice suivi)</h2>
-                <?php if (empty($evolutionData)): ?>
-                    <p class="muted">Pas de données pour cet exercice.</p>
+                <h2 class="h5 mb-3">Séances de Musculation</h2>
+                <?php if (empty($recentWorkouts)): ?>
+                    <p class="muted">Aucune séance enregistrée.</p>
                 <?php else: ?>
-                    <canvas id="evolutionChart" height="200"></canvas>
+                    <div class="list-group list-group-flush">
+                        <?php foreach ($recentWorkouts as $workout): ?>
+                            <!-- Lien vers le détail de la séance -->
+                            <a href="<?= site_url('workout/' . $workout['id']) ?>" class="list-group-item list-group-item-action px-0 d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="fw-semibold text-primary">Séance du <?= date('d/m/Y', strtotime($workout['date'])) ?></div>
+                                    <div class="small muted text-truncate" style="max-width: 250px;"><?= esc($workout['notes']) ?></div>
+                                </div>
+                                <span class="badge bg-light text-dark border">Voir →</span>
+                            </a>
+                        <?php endforeach ?>
+                    </div>
                 <?php endif ?>
             </div></div>
         </div>
