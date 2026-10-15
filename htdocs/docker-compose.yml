@@ -1,0 +1,37 @@
+version: '3.8'
+
+name: ci4-vide
+
+services:
+  web:
+    build: .
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html # Synchronise ton code en temps réel avec le conteneur
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: ci4-vide
+      MYSQL_DATABASE: ci4-vide
+      MYSQL_USER: ci4-vide
+      MYSQL_PASSWORD: ci4-vide
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql # Permet de ne pas perdre les données quand on coupe Docker
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: db
+    depends_on:
+      - db
+
+volumes:
+  db_data:
