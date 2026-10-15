@@ -1,6 +1,4 @@
-<?php
-
-namespace App\Controllers;
+<?php namespace App\Controllers;
 
 use App\Models\StrengthWorkoutModel;
 use App\Models\WorkoutSetModel;
@@ -9,17 +7,21 @@ use CodeIgniter\Exceptions\PageNotFoundException;
 class Strength extends BaseController
 {
     // Affiche le détail d'une séance (liste des exos et séries)
-    public function workout(int $id)
+    public function workout($id = null)
     {
+        if ($id === null || !is_numeric($id)) {
+            throw PageNotFoundException::forPageNotFound();
+        }
+
         $workoutModel = new StrengthWorkoutModel();
-        $workout = $workoutModel->find($id);
+        $workout = $workoutModel->find((int)$id);
 
         if (!$workout) {
             throw PageNotFoundException::forPageNotFound();
         }
 
         $setModel = new WorkoutSetModel();
-        $rawSets = $setModel->getWorkoutDetails($id);
+        $rawSets = $setModel->getWorkoutDetails((int)$id);
 
         // Grouper les séries par exercice pour un affichage propre
         $exercises = [];
@@ -44,17 +46,21 @@ class Strength extends BaseController
     }
 
     // Affiche le graphique de progression d'un exercice précis
-    public function exercise(int $id)
+    public function exercise($id = null)
     {
+        if ($id === null || !is_numeric($id)) {
+            throw PageNotFoundException::forPageNotFound();
+        }
+
         $db = \Config\Database::connect();
-        $exercise = $db->table('exercises')->where('id', $id)->get()->getRowArray();
+        $exercise = $db->table('exercises')->where('id', (int)$id)->get()->getRowArray();
 
         if (!$exercise) {
             throw PageNotFoundException::forPageNotFound();
         }
 
         $setModel = new WorkoutSetModel();
-        $evolution = $setModel->getExerciseEvolution($id);
+        $evolution = $setModel->getExerciseEvolution((int)$id);
 
         return view('strength/exercise', [
             'title'         => 'Progression : ' . $exercise['name'],

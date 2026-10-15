@@ -1,6 +1,4 @@
-<?php
-
-namespace App\Models;
+<?php namespace App\Models;
 
 use CodeIgniter\Model;
 
@@ -34,7 +32,7 @@ class WorkoutSetModel extends Model
         return $this->db->query($sql)->getResultArray();
     }
 
-    public function getExerciseEvolution(int $exerciseId): array
+    public function getExerciseEvolution($exerciseId): array
     {
         $sql = "
             SELECT 
@@ -47,11 +45,11 @@ class WorkoutSetModel extends Model
             ORDER BY sw.date ASC
         ";
         
-        return $this->db->query($sql, [$exerciseId])->getResultArray();
+        return $this->db->query($sql, [(int)$exerciseId])->getResultArray();
     }
 
     // NOUVELLE MÉTHODE : Récupère tous les détails d'une séance
-    public function getWorkoutDetails(int $workoutId): array
+    public function getWorkoutDetails($workoutId): array
     {
         $sql = "
             SELECT 
@@ -62,6 +60,6 @@ class WorkoutSetModel extends Model
             WHERE ws.workout_id = ?
             ORDER BY ws.exercise_id, ws.set_number ASC
         ";
-        return $this->db->query($sql, [$workoutId])->getResultArray();
+        return $this->db->query($sql, [(int)$workoutId])->getResultArray();
     }
 }
