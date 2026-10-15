@@ -1,0 +1,90 @@
+<?php
+
+namespace App\Models;
+
+use CodeIgniter\Model;
+
+class ActivityModel extends Model
+{
+    protected $table            = 'coros_activities';
+    protected $primaryKey       = 'id';
+    protected $returnType       = 'array';
+    protected $useAutoIncrement = true;
+    protected $useTimestamps    = true;
+    protected $createdField     = 'created_at';
+    protected $updatedField     = 'updated_at';
+
+    protected $allowedFields = [
+        'coros_activity_id',
+        'name',
+        'sport',
+        'started_at',
+        'duration_seconds',
+        'distance_meters',
+        'avg_heart_rate',
+        'max_heart_rate',
+        'elevation_gain_m',
+        'avg_speed_mps',
+        'avg_pace_seconds_per_km',
+        'raw_data',
+        'synced_at',
+    ];
+
+    public function getRecent(int $limit = 10): array
+    {
+        return $this->orderBy('started_at', 'DESC')
+            ->findAll(max(1, min($limit, 100)));
+    }
+
+    public function getStats(): array
+    {
+        $row = $this->select(
+            'COUNT(*) AS total_activities,
+             COALESCE(SUM(distance_meters), 0) AS total_distance_meters,
+             COALESCE(SUM(duration_seconds), 0) AS total_duration_seconds,
+             COALESCE(AVG(avg_heart_rate), 0) AS average_heart_rate,
+             COALESCE(AVG(elevation_gain_m), 0) AS average_elevation_gain'
+        )->first();
+
+        return $row ?? [
+            'total_activities' => 0,
+            'total_distance_meters' => 0,
+            'total_duration_seconds' => 0,
+            'average_heart_rate' => 0,
+            'average_elevation_gain' => 0,
+        ];
+    }
+
+    public function getMonthlyDistance(int $months = 6): array
+    {
+        $months = max(1, min($months, 24));
+        $db = $this->db;
+
+        $sql = "
+            SELECT DATE_FORMAT(started_at, '%Y-%m') AS month_key,
+                   COALESCE(SUM(distance_meters), 0) AS distance_meters
+            FROM coros_activities
+            WHERE started_at >= DATE_SUB(CURDATE(), INTERVAL ? MONTH)
+            GROUP BY DATE_FORMAT(started_at, '%Y-%m')
+            ORDER BY month_key ASC
+        ";
+
+        return $db->query($sql, [$months])->getResultArray();
+    }
+
+    public function upsertFromCoros(array $activity): bool
+    {
+        if (empty($activity['coros_activity_id'])) {
+            return false;
+        }
+
+        $existing = $this->where('coros_activity_id', (string) $activity['coros_activity_id'])->first();
+        $activity['synced_at'] = date('Y-m-d H:i:s');
+
+        if ($existing) {
+            return $this->update($existing['id'], $activity);
+        }
+
+        return (bool) $this->insert($activity);
+    }
+}
