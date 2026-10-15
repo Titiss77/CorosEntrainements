@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : jeu. 15 oct. 2026 à 12:43
+-- Généré le : jeu. 15 oct. 2026 à 13:53
 -- Version du serveur : 8.0.39
 -- Version de PHP : 8.2.12
 
@@ -121,6 +121,31 @@ CREATE TABLE `auth_token_logins` (
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `coros_activities`
+--
+
+CREATE TABLE `coros_activities` (
+  `id` bigint UNSIGNED NOT NULL,
+  `coros_activity_id` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `name` varchar(190) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `sport` varchar(80) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `started_at` datetime DEFAULT NULL,
+  `duration_seconds` int UNSIGNED DEFAULT NULL,
+  `distance_meters` decimal(10,2) DEFAULT NULL,
+  `avg_heart_rate` smallint UNSIGNED DEFAULT NULL,
+  `max_heart_rate` smallint UNSIGNED DEFAULT NULL,
+  `elevation_gain_m` decimal(8,2) DEFAULT NULL,
+  `avg_speed_mps` decimal(8,3) DEFAULT NULL,
+  `avg_pace_seconds_per_km` int UNSIGNED DEFAULT NULL,
+  `raw_data` longtext COLLATE utf8mb4_general_ci,
+  `synced_at` datetime DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `migrations`
 --
 
@@ -142,7 +167,8 @@ INSERT INTO `migrations` (`id`, `version`, `class`, `group`, `namespace`, `time`
 (1, '2020-12-28-223112', 'CodeIgniter\\Shield\\Database\\Migrations\\CreateAuthTables', 'development', 'CodeIgniter\\Shield', 1792060915, 1),
 (2, '2021-07-04-041948', 'CodeIgniter\\Settings\\Database\\Migrations\\CreateSettingsTable', 'development', 'CodeIgniter\\Settings', 1792060915, 1),
 (3, '2021-11-14-143905', 'CodeIgniter\\Settings\\Database\\Migrations\\AddContextColumn', 'development', 'CodeIgniter\\Settings', 1792060915, 1),
-(4, '2026-07-20-181246', 'CodeIgniter\\Settings\\Database\\Migrations\\ConvertSqlsrvValueColumn', 'development', 'CodeIgniter\\Settings', 1792060915, 1);
+(4, '2026-07-20-181246', 'CodeIgniter\\Settings\\Database\\Migrations\\ConvertSqlsrvValueColumn', 'development', 'CodeIgniter\\Settings', 1792060915, 1),
+(5, '2026-10-15-120000', 'App\\Database\\Migrations\\CreateCorosActivities', 'development', 'App', 1792061213, 2);
 
 -- --------------------------------------------------------
 
@@ -230,6 +256,15 @@ ALTER TABLE `auth_token_logins`
   ADD KEY `user_id` (`user_id`);
 
 --
+-- Index pour la table `coros_activities`
+--
+ALTER TABLE `coros_activities`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `coros_activity_id` (`coros_activity_id`),
+  ADD KEY `started_at` (`started_at`),
+  ADD KEY `sport` (`sport`);
+
+--
 -- Index pour la table `migrations`
 --
 ALTER TABLE `migrations`
@@ -289,10 +324,16 @@ ALTER TABLE `auth_token_logins`
   MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT pour la table `coros_activities`
+--
+ALTER TABLE `coros_activities`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT pour la table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT pour la table `settings`
