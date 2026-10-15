@@ -16,13 +16,14 @@
 <body>
 <nav class="navbar navbar-dark bg-dark">
     <div class="container">
-        <a class="navbar-brand fw-semibold" href="<?= site_url('dashboard') ?>">COROS · Entraînements</a>
+        <a class="navbar-brand fw-semibold" href="<?= site_url('dashboard') ?>">COROS & Musculation</a>
         <div class="d-flex gap-2">
             <a class="btn btn-outline-light btn-sm" href="<?= site_url('activites') ?>">Activités</a>
             <a class="btn btn-warning btn-sm" href="<?= site_url('coros/connect') ?>">Connecter COROS</a>
         </div>
     </div>
 </nav>
+
 <main class="container py-4">
     <?php if (session()->getFlashdata('success')): ?>
         <div class="alert alert-success"><?= esc(session()->getFlashdata('success')) ?></div>
@@ -34,7 +35,7 @@
     <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
         <div>
             <h1 class="h3 mb-1">Tableau de bord</h1>
-            <p class="muted mb-0">Vue d’ensemble de tes activités enregistrées.</p>
+            <p class="muted mb-0">Vue d'ensemble de tes entraînements natation, running et musculation.</p>
         </div>
         <form method="post" action="<?= site_url('coros/sync') ?>">
             <?= csrf_field() ?>
@@ -47,19 +48,22 @@
         $totalSeconds = (int) ($stats['total_duration_seconds'] ?? 0);
         $durationText = sprintf('%dh %02d', intdiv($totalSeconds, 3600), intdiv($totalSeconds % 3600, 60));
     ?>
+
+    <!-- Stats Rapides -->
     <div class="row g-3 mb-4">
-        <div class="col-12 col-sm-6 col-xl-3"><div class="card stat-card h-100"><div class="card-body"><div class="muted">Activités</div><div class="stat-value"><?= number_format((int) ($stats['total_activities'] ?? 0), 0, ',', ' ') ?></div></div></div></div>
+        <div class="col-12 col-sm-6 col-xl-3"><div class="card stat-card h-100"><div class="card-body"><div class="muted">Activités COROS</div><div class="stat-value"><?= number_format((int) ($stats['total_activities'] ?? 0), 0, ',', ' ') ?></div></div></div></div>
         <div class="col-12 col-sm-6 col-xl-3"><div class="card stat-card h-100"><div class="card-body"><div class="muted">Distance totale</div><div class="stat-value"><?= number_format($totalDistanceKm, 1, ',', ' ') ?> <small class="fs-6">km</small></div></div></div></div>
         <div class="col-12 col-sm-6 col-xl-3"><div class="card stat-card h-100"><div class="card-body"><div class="muted">Temps cumulé</div><div class="stat-value"><?= esc($durationText) ?> <small class="fs-6">h</small></div></div></div></div>
         <div class="col-12 col-sm-6 col-xl-3"><div class="card stat-card h-100"><div class="card-body"><div class="muted">FC moyenne</div><div class="stat-value"><?= (int) round((float) ($stats['average_heart_rate'] ?? 0)) ?> <small class="fs-6">bpm</small></div></div></div></div>
     </div>
 
-    <div class="row g-3">
+    <!-- Première Ligne : Graphiques Cardio -->
+    <div class="row g-3 mb-4">
         <div class="col-12 col-xl-7">
             <div class="card stat-card h-100"><div class="card-body">
-                <h2 class="h5 mb-3">Distance mensuelle</h2>
+                <h2 class="h5 mb-3">Distance mensuelle (Cardio)</h2>
                 <?php if (empty($monthlyDistance)): ?>
-                    <p class="muted">Aucune activité en base pour le moment. Le graphique se remplira après la première synchronisation.</p>
+                    <p class="muted">Aucune activité en base pour le moment.</p>
                 <?php else: ?>
                     <canvas id="distanceChart" height="120"></canvas>
                 <?php endif ?>
@@ -69,7 +73,7 @@
             <div class="card stat-card h-100"><div class="card-body">
                 <h2 class="h5 mb-3">Activités récentes</h2>
                 <?php if (empty($activities)): ?>
-                    <p class="muted">Aucune activité enregistrée. Une fois la connexion COROS configurée, les séances apparaîtront ici.</p>
+                    <p class="muted">Aucune activité enregistrée.</p>
                 <?php else: ?>
                     <div class="list-group list-group-flush">
                         <?php foreach ($activities as $activity): ?>
@@ -77,7 +81,7 @@
                                 <div class="d-flex justify-content-between gap-3">
                                     <div>
                                         <div class="fw-semibold"><?= esc($activity['name'] ?: ($activity['sport'] ?: 'Activité')) ?></div>
-                                        <div class="small muted"><?= esc($activity['started_at'] ?: 'Date inconnue') ?> · <?= esc($activity['sport'] ?: 'Sport non précisé') ?></div>
+                                        <div class="small muted"><?= esc($activity['started_at'] ?: 'Date inconnue') ?> • <?= esc($activity['sport'] ?: 'Sport non précisé') ?></div>
                                     </div>
                                     <div class="text-end text-nowrap fw-semibold">
                                         <?= number_format(((float) ($activity['distance_meters'] ?? 0)) / 1000, 2, ',', ' ') ?> km
@@ -86,23 +90,79 @@
                             </div>
                         <?php endforeach ?>
                     </div>
-                    <a class="btn btn-outline-secondary btn-sm mt-3" href="<?= site_url('activites') ?>">Voir toutes les activités</a>
                 <?php endif ?>
             </div></div>
         </div>
     </div>
-    <p class="small muted mt-4">Les statistiques reflètent uniquement les données présentes dans ta base de données.</p>
+
+    <!-- Deuxième Ligne : Graphiques Musculation -->
+    <div class="row g-3">
+        <div class="col-12 col-md-6">
+            <div class="card stat-card h-100"><div class="card-body">
+                <h2 class="h5 mb-3">Tonnage Global par Séance</h2>
+                <?php if (empty($tonnageData)): ?>
+                    <p class="muted">Pas de données de musculation. Ajoutez des séries pour voir le graphique.</p>
+                <?php else: ?>
+                    <canvas id="tonnageChart" height="200"></canvas>
+                <?php endif ?>
+            </div></div>
+        </div>
+        <div class="col-12 col-md-6">
+            <div class="card stat-card h-100"><div class="card-body">
+                <h2 class="h5 mb-3">Évolution Charge Max (Exercice suivi)</h2>
+                <?php if (empty($evolutionData)): ?>
+                    <p class="muted">Pas de données pour cet exercice.</p>
+                <?php else: ?>
+                    <canvas id="evolutionChart" height="200"></canvas>
+                <?php endif ?>
+            </div></div>
+        </div>
+    </div>
 </main>
-<?php if (!empty($monthlyDistance)): ?>
+
 <script>
-const monthlyLabels = <?= json_encode(array_column($monthlyDistance, 'month_key'), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>;
-const monthlyValues = <?= json_encode(array_map(static fn($row) => round(((float) $row['distance_meters']) / 1000, 2), $monthlyDistance)) ?>;
-new Chart(document.getElementById('distanceChart'), {
-    type: 'bar',
-    data: { labels: monthlyLabels, datasets: [{ label: 'Distance (km)', data: monthlyValues, borderWidth: 1 }] },
-    options: { responsive: true, scales: { y: { beginAtZero: true } } }
-});
+    // 1. Graphique Distance Mensuelle (COROS)
+    <?php if (!empty($monthlyDistance)): ?>
+        const monthlyLabels = <?= json_encode(array_column($monthlyDistance, 'month_key'), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>;
+        const monthlyValues = <?= json_encode(array_map(static fn($row) => round(((float) $row['distance_meters']) / 1000, 2), $monthlyDistance)) ?>;
+        new Chart(document.getElementById('distanceChart'), {
+            type: 'bar',
+            data: { labels: monthlyLabels, datasets: [{ label: 'Distance (km)', data: monthlyValues, backgroundColor: '#0d6efd', borderWidth: 1 }] },
+            options: { responsive: true, scales: { y: { beginAtZero: true } } }
+        });
+    <?php endif ?>
+
+    // 2. Graphique Tonnage Musculation
+    <?php if (!empty($tonnageData)): ?>
+        const tonnageLabels = <?= json_encode(array_column($tonnageData, 'workout_date'), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>;
+        const tonnageValues = <?= json_encode(array_column($tonnageData, 'total_volume_kg'), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>;
+        new Chart(document.getElementById('tonnageChart'), {
+            type: 'bar',
+            data: { labels: tonnageLabels, datasets: [{ label: 'Tonnage Total (kg)', data: tonnageValues, backgroundColor: '#198754' }] },
+            options: { responsive: true, scales: { y: { beginAtZero: true } } }
+        });
+    <?php endif ?>
+
+    // 3. Graphique Évolution Charge Max
+    <?php if (!empty($evolutionData)): ?>
+        const evolLabels = <?= json_encode(array_column($evolutionData, 'workout_date'), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>;
+        const evolValues = <?= json_encode(array_column($evolutionData, 'max_weight_lifted'), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>;
+        new Chart(document.getElementById('evolutionChart'), {
+            type: 'line',
+            data: { 
+                labels: evolLabels, 
+                datasets: [{ 
+                    label: 'Charge Max (kg)', 
+                    data: evolValues, 
+                    borderColor: '#dd4814',
+                    backgroundColor: 'rgba(221, 72, 20, 0.1)',
+                    fill: true,
+                    tension: 0.3 
+                }] 
+            },
+            options: { responsive: true, scales: { y: { beginAtZero: false } } }
+        });
+    <?php endif ?>
 </script>
-<?php endif ?>
 </body>
 </html>
