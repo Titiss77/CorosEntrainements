@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : jeu. 15 oct. 2026 à 13:53
+-- Généré le : jeu. 15 oct. 2026 à 16:14
 -- Version du serveur : 8.0.39
 -- Version de PHP : 8.2.12
 
@@ -146,6 +146,18 @@ CREATE TABLE `coros_activities` (
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `exercises`
+--
+
+CREATE TABLE `exercises` (
+  `id` int UNSIGNED NOT NULL,
+  `name` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `muscle_group` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `migrations`
 --
 
@@ -158,17 +170,6 @@ CREATE TABLE `migrations` (
   `time` int NOT NULL,
   `batch` int UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Déchargement des données de la table `migrations`
---
-
-INSERT INTO `migrations` (`id`, `version`, `class`, `group`, `namespace`, `time`, `batch`) VALUES
-(1, '2020-12-28-223112', 'CodeIgniter\\Shield\\Database\\Migrations\\CreateAuthTables', 'development', 'CodeIgniter\\Shield', 1792060915, 1),
-(2, '2021-07-04-041948', 'CodeIgniter\\Settings\\Database\\Migrations\\CreateSettingsTable', 'development', 'CodeIgniter\\Settings', 1792060915, 1),
-(3, '2021-11-14-143905', 'CodeIgniter\\Settings\\Database\\Migrations\\AddContextColumn', 'development', 'CodeIgniter\\Settings', 1792060915, 1),
-(4, '2026-07-20-181246', 'CodeIgniter\\Settings\\Database\\Migrations\\ConvertSqlsrvValueColumn', 'development', 'CodeIgniter\\Settings', 1792060915, 1),
-(5, '2026-10-15-120000', 'App\\Database\\Migrations\\CreateCorosActivities', 'development', 'App', 1792061213, 2);
 
 -- --------------------------------------------------------
 
@@ -190,6 +191,18 @@ CREATE TABLE `settings` (
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `strength_workouts`
+--
+
+CREATE TABLE `strength_workouts` (
+  `id` int UNSIGNED NOT NULL,
+  `date` datetime NOT NULL,
+  `notes` text COLLATE utf8mb4_general_ci
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `users`
 --
 
@@ -203,6 +216,21 @@ CREATE TABLE `users` (
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   `deleted_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `workout_sets`
+--
+
+CREATE TABLE `workout_sets` (
+  `id` bigint UNSIGNED NOT NULL,
+  `workout_id` int UNSIGNED NOT NULL,
+  `exercise_id` int UNSIGNED NOT NULL,
+  `set_number` int UNSIGNED NOT NULL,
+  `reps` int UNSIGNED NOT NULL,
+  `weight` decimal(6,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -265,6 +293,12 @@ ALTER TABLE `coros_activities`
   ADD KEY `sport` (`sport`);
 
 --
+-- Index pour la table `exercises`
+--
+ALTER TABLE `exercises`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Index pour la table `migrations`
 --
 ALTER TABLE `migrations`
@@ -277,11 +311,25 @@ ALTER TABLE `settings`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Index pour la table `strength_workouts`
+--
+ALTER TABLE `strength_workouts`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Index pour la table `users`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `username` (`username`);
+
+--
+-- Index pour la table `workout_sets`
+--
+ALTER TABLE `workout_sets`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `workout_sets_workout_id_foreign` (`workout_id`),
+  ADD KEY `workout_sets_exercise_id_foreign` (`exercise_id`);
 
 --
 -- AUTO_INCREMENT pour les tables déchargées
@@ -330,10 +378,16 @@ ALTER TABLE `coros_activities`
   MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT pour la table `exercises`
+--
+ALTER TABLE `exercises`
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT pour la table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT pour la table `settings`
@@ -342,10 +396,22 @@ ALTER TABLE `settings`
   MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT pour la table `strength_workouts`
+--
+ALTER TABLE `strength_workouts`
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT pour la table `users`
 --
 ALTER TABLE `users`
   MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `workout_sets`
+--
+ALTER TABLE `workout_sets`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- Contraintes pour les tables déchargées
@@ -374,6 +440,13 @@ ALTER TABLE `auth_permissions_users`
 --
 ALTER TABLE `auth_remember_tokens`
   ADD CONSTRAINT `auth_remember_tokens_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Contraintes pour la table `workout_sets`
+--
+ALTER TABLE `workout_sets`
+  ADD CONSTRAINT `workout_sets_exercise_id_foreign` FOREIGN KEY (`exercise_id`) REFERENCES `exercises` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `workout_sets_workout_id_foreign` FOREIGN KEY (`workout_id`) REFERENCES `strength_workouts` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
