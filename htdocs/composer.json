@@ -16,6 +16,7 @@
         "codeigniter4/settings": "^2.4",
         "codeigniter4/shield": "^1.4",
         "laminas/laminas-escaper": "^2.14",
+        "mcp/sdk": "^0.8.1",
         "psr/log": "^3.0"
     },
     "require-dev": {
@@ -61,7 +62,10 @@
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
     },
     "scripts": {
         "test": "phpunit"
