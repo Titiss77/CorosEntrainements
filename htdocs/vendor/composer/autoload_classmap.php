@@ -5015,6 +5015,7 @@ return array(
     'Webmozart\\Assert\\InvalidArgumentException' => $vendorDir . '/webmozart/assert/src/InvalidArgumentException.php',
     'Webmozart\\Assert\\Mixin' => $vendorDir . '/webmozart/assert/src/Mixin.php',
     'Webmozart\\Assert\\PsalmPlugin' => $vendorDir . '/webmozart/assert/src/PsalmPlugin.php',
+    'adriangibbons\\phpFITFileAnalysis' => $vendorDir . '/adriangibbons/php-fit-file-analysis/src/phpFITFileAnalysis.php',
     'org\\bovigo\\vfs\\DotDirectory' => $vendorDir . '/mikey179/vfsstream/src/main/php/org/bovigo/vfs/DotDirectory.php',
     'org\\bovigo\\vfs\\Quota' => $vendorDir . '/mikey179/vfsstream/src/main/php/org/bovigo/vfs/Quota.php',
     'org\\bovigo\\vfs\\content\\FileContent' => $vendorDir . '/mikey179/vfsstream/src/main/php/org/bovigo/vfs/content/FileContent.php',

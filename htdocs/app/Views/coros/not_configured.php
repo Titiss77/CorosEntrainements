@@ -13,7 +13,7 @@
         <div class="alert alert-info"><?= esc($message) ?></div>
         <p>Le serveur MCP officiel est <code>https://mcp.coros.com/mcp</code>. La connexion exige OAuth 2.0 et des échanges MCP authentifiés.</p>
         <p><a href="https://support.coros.com/hc/fr/articles/53181619102996-D%C3%A9velopper-sur-COROS-MCP" target="_blank" rel="noopener">Consulter la documentation officielle COROS</a></p>
-        <a href="<?= site_url('dashboard') ?>" class="btn btn-primary">Retour au tableau de bord</a>
+        <a href="<?= site_url('/') ?>" class="btn btn-primary">Retour au tableau de bord</a>
     </div></div>
 </main>
 </body>

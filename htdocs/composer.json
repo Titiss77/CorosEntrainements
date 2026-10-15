@@ -13,6 +13,7 @@
         "php": "^8.1",
         "ext-intl": "*",
         "ext-mbstring": "*",
+        "adriangibbons/php-fit-file-analysis": "^3.2",
         "codeigniter4/settings": "^2.4",
         "codeigniter4/shield": "^1.4",
         "laminas/laminas-escaper": "^2.14",

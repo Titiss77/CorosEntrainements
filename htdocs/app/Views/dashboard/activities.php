@@ -7,11 +7,11 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="bg-light">
-<nav class="navbar navbar-dark bg-dark"><div class="container"><a class="navbar-brand" href="<?= site_url('dashboard') ?>">COROS · Entraînements</a></div></nav>
+<nav class="navbar navbar-dark bg-dark"><div class="container"><a class="navbar-brand" href="<?= site_url('/') ?>">COROS · Entraînements</a></div></nav>
 <main class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h1 class="h3 mb-0">Activités</h1>
-        <a href="<?= site_url('dashboard') ?>" class="btn btn-outline-secondary">Retour au tableau de bord</a>
+        <a href="<?= site_url('/') ?>" class="btn btn-outline-secondary">Retour au tableau de bord</a>
     </div>
     <div class="card border-0 shadow-sm"><div class="table-responsive">
         <table class="table table-hover align-middle mb-0">

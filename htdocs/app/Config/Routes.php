@@ -12,3 +12,5 @@ $routes->get('coros/callback', 'Coros::callback');
 $routes->post('coros/sync', 'Coros::sync');
 $routes->get('workout/(:num)', 'Strength::workout/$1');
 $routes->get('exercise/(:num)', 'Strength::exercise/$1');
+// À ajouter avec vos autres routes :
+$routes->post('coros/import', 'Coros::import');

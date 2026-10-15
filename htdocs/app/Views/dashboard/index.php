@@ -14,9 +14,10 @@
     </style>
 </head>
 <body>
+
 <nav class="navbar navbar-dark bg-dark">
     <div class="container">
-        <a class="navbar-brand fw-semibold" href="<?= site_url('dashboard') ?>">COROS & Musculation</a>
+        <a class="navbar-brand fw-semibold" href="<?= site_url('/') ?>">COROS & Musculation</a>
         <div class="d-flex gap-2">
             <a class="btn btn-outline-light btn-sm" href="<?= site_url('activites') ?>">Activités</a>
             <a class="btn btn-warning btn-sm" href="<?= site_url('coros/connect') ?>">Connecter COROS</a>
@@ -37,10 +38,21 @@
             <h1 class="h3 mb-1">Tableau de bord</h1>
             <p class="muted mb-0">Vue d'ensemble de tes entraînements natation, running et musculation.</p>
         </div>
-        <form method="post" action="<?= site_url('coros/sync') ?>">
-            <?= csrf_field() ?>
-            <button class="btn btn-primary" type="submit">Synchroniser COROS</button>
-        </form>
+        
+        <div class="d-flex gap-2 flex-wrap">
+            <!-- NOUVEAU FORMULAIRE D'IMPORTATION FIT -->
+            <form method="post" action="<?= site_url('coros/import') ?>" enctype="multipart/form-data" class="d-flex gap-2">
+                <?= csrf_field() ?>
+                <input type="file" name="fit_file" accept=".fit" class="form-control" required style="max-width: 250px;">
+                <button class="btn btn-secondary text-nowrap" type="submit">Importer FIT</button>
+            </form>
+
+            <!-- BOUTON DE SYNCHRONISATION -->
+            <form method="post" action="<?= site_url('coros/sync') ?>">
+                <?= csrf_field() ?>
+                <button class="btn btn-primary" type="submit">Synchroniser COROS</button>
+            </form>
+        </div>
     </div>
 
     <?php
@@ -108,7 +120,7 @@
             </div></div>
         </div>
         
-        <!-- NOUVEAU BLOC : Liste des Séances de Musculation Cliquables -->
+        <!-- Liste des Séances de Musculation Cliquables -->
         <div class="col-12 col-xl-5">
             <div class="card stat-card h-100"><div class="card-body">
                 <h2 class="h5 mb-3">Séances de Musculation</h2>
@@ -117,7 +129,6 @@
                 <?php else: ?>
                     <div class="list-group list-group-flush">
                         <?php foreach ($recentWorkouts as $workout): ?>
-                            <!-- Lien vers le détail de la séance -->
                             <a href="<?= site_url('workout/' . $workout['id']) ?>" class="list-group-item list-group-item-action px-0 d-flex justify-content-between align-items-center">
                                 <div>
                                     <div class="fw-semibold text-primary">Séance du <?= date('d/m/Y', strtotime($workout['date'])) ?></div>

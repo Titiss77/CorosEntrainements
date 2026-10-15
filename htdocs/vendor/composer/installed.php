@@ -3,13 +3,22 @@
         'name' => 'codeigniter4/framework',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '03d705af8a272f30b7fe165843acb40e2860d2b2',
+        'reference' => 'd229d8fe34258db48c97ffaba746d021148de121',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
         'dev' => true,
     ),
     'versions' => array(
+        'adriangibbons/php-fit-file-analysis' => array(
+            'pretty_version' => 'v3.2.4',
+            'version' => '3.2.4.0',
+            'reference' => '8efd36b1b963f01c42dc5329626519c040dec664',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../adriangibbons/php-fit-file-analysis',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
         'clue/ndjson-react' => array(
             'pretty_version' => 'v1.3.0',
             'version' => '1.3.0.0',
@@ -37,7 +46,7 @@
         'codeigniter4/framework' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '03d705af8a272f30b7fe165843acb40e2860d2b2',
+            'reference' => 'd229d8fe34258db48c97ffaba746d021148de121',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

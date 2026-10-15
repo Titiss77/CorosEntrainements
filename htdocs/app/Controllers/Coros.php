@@ -81,14 +81,14 @@ class Coros extends BaseController
                     session()->set('coros_refresh_token', $data['refresh_token']);
                 }
 
-                return redirect()->to(site_url('dashboard'))->with('success', 'Connexion à COROS réussie !');
+                return redirect()->to(site_url('/'))->with('success', 'Connexion à COROS réussie !');
             } else {
                 log_message('error', 'Erreur Token COROS : ' . $response->getBody());
-                return redirect()->to(site_url('dashboard'))->with('error', 'Impossible de récupérer le jeton d\'accès.');
+                return redirect()->to(site_url('/'))->with('error', 'Impossible de récupérer le jeton d\'accès.');
             }
         } catch (\Exception $e) {
             log_message('error', 'Erreur CURL COROS : ' . $e->getMessage());
-            return redirect()->to(site_url('dashboard'))->with('error', 'Erreur de communication avec COROS.');
+            return redirect()->to(site_url('/'))->with('error', 'Erreur de communication avec COROS.');
         }
     }
 
@@ -96,18 +96,48 @@ class Coros extends BaseController
     {
         // Vérifie si l'utilisateur est bien connecté avant de synchroniser
         if (!session()->has('coros_access_token')) {
-            return redirect()->to(site_url('dashboard'))
+            return redirect()->to(site_url('/'))
                 ->with('error', 'Vous devez d\'abord connecter votre compte COROS.');
         }
 
         $service = new CorosMcpService();
         try {
             $count = $service->syncRecentActivities();
-            return redirect()->to(site_url('dashboard'))->with('success', "Synchronisation terminée. $count nouvelles activités importées.");
+            return redirect()->to(site_url('/'))->with('success', "Synchronisation terminée. $count nouvelles activités importées.");
         } catch (\Throwable $e) {
             log_message('error', 'COROS sync: {message}', ['message' => $e->getMessage()]);
-            return redirect()->to(site_url('dashboard'))
+            return redirect()->to(site_url('/'))
                 ->with('error', 'Synchronisation impossible : ' . $e->getMessage());
         }
+    }
+
+    public function import(): RedirectResponse
+    {
+        $file = $this->request->getFile('fit_file');
+
+        // Vérification de base : le fichier est-il valide et a-t-il bien l'extension .fit ?
+        if ($file && $file->isValid() && !$file->hasMoved()) {
+            if (strtolower($file->getClientExtension()) !== 'fit') {
+                return redirect()->to(site_url('/'))
+                                 ->with('error', 'Le fichier doit obligatoirement être au format .fit');
+            }
+
+            $filePath = $file->getTempName();
+            $fitService = new \App\Services\FitImportService();
+
+            try {
+                // On passe le chemin temporaire du fichier au service
+                $fitService->importFile($filePath);
+                return redirect()->to(site_url('/'))
+                                 ->with('success', 'Votre fichier FIT a été importé et analysé avec succès.');
+            } catch (\Exception $e) {
+                log_message('error', 'Erreur Import FIT: ' . $e->getMessage());
+                return redirect()->to(site_url('/'))
+                                 ->with('error', 'Erreur lors de l\'importation : ' . $e->getMessage());
+            }
+        }
+
+        return redirect()->to(site_url('/'))
+                         ->with('error', 'Fichier invalide ou aucun fichier reçu.');
     }
 }

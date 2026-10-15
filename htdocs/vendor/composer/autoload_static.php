@@ -28,6 +28,10 @@ class ComposerStaticInitddb6b3572b12daa1996763486abac461
         array (
             'phpDocumentor\\Reflection\\' => 25,
         ),
+        'a' => 
+        array (
+            'adriangibbons\\' => 14,
+        ),
         'W' => 
         array (
             'Webmozart\\Assert\\' => 17,
@@ -138,6 +142,10 @@ class ComposerStaticInitddb6b3572b12daa1996763486abac461
             0 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
             1 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
             2 => __DIR__ . '/..' . '/phpdocumentor/reflection-common/src',
+        ),
+        'adriangibbons\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/adriangibbons/php-fit-file-analysis/src',
         ),
         'Webmozart\\Assert\\' => 
         array (
@@ -5403,6 +5411,7 @@ class ComposerStaticInitddb6b3572b12daa1996763486abac461
         'Webmozart\\Assert\\InvalidArgumentException' => __DIR__ . '/..' . '/webmozart/assert/src/InvalidArgumentException.php',
         'Webmozart\\Assert\\Mixin' => __DIR__ . '/..' . '/webmozart/assert/src/Mixin.php',
         'Webmozart\\Assert\\PsalmPlugin' => __DIR__ . '/..' . '/webmozart/assert/src/PsalmPlugin.php',
+        'adriangibbons\\phpFITFileAnalysis' => __DIR__ . '/..' . '/adriangibbons/php-fit-file-analysis/src/phpFITFileAnalysis.php',
         'org\\bovigo\\vfs\\DotDirectory' => __DIR__ . '/..' . '/mikey179/vfsstream/src/main/php/org/bovigo/vfs/DotDirectory.php',
         'org\\bovigo\\vfs\\Quota' => __DIR__ . '/..' . '/mikey179/vfsstream/src/main/php/org/bovigo/vfs/Quota.php',
         'org\\bovigo\\vfs\\content\\FileContent' => __DIR__ . '/..' . '/mikey179/vfsstream/src/main/php/org/bovigo/vfs/content/FileContent.php',
